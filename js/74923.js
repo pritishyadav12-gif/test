@@ -7,7 +7,7 @@ class ApiService {
         this.sessionCookie = null;
         this.connectionCallbacks = [];
         this.themes = {
-            default: { name: 'Pika Glass', bg: '#050611', headerBg: 'rgba(21, 18, 47, 0.72)', text: '#f6f3ff', moduleEnabled: '#ffffff', moduleDisabled: '#8d86a8', moduleEnabledBg: 'rgba(128, 89, 255, 0.28)', moduleDisabledBg: 'rgba(255, 255, 255, 0.08)', grad1: '#9b6dff', grad2: '#6ee7ff' },
+            default: { name: 'Pika Carbon', bg: '#05080d', headerBg: 'rgba(11, 18, 28, 0.78)', text: '#edf7f5', moduleEnabled: '#38f8d4', moduleDisabled: '#80919d', moduleEnabledBg: 'rgba(56, 248, 212, 0.18)', moduleDisabledBg: 'rgba(255, 255, 255, 0.07)', grad1: '#38f8d4', grad2: '#63a4ff' },
             halloween: { name: 'Halloween', bg: '#1a0f0f', headerBg: '#2a1515', text: '#ff7518', moduleEnabled: '#ff7518', moduleDisabled: '#8b4513', moduleEnabledBg: '#3a1f1f', moduleDisabledBg: '#2a1515', grad1: '#ff7518', grad2: '#ff4500' },
             dark: { name: 'Dark', bg: '#151515', headerBg: '#1f1f1f', text: '#00aaaa', moduleEnabled: '#00aaaa', moduleDisabled: '#808080', moduleEnabledBg: '#505050', moduleDisabledBg: '#353535', grad1: '#00aaaa', grad2: '#00ffff' },
             light: { name: 'Light', bg: '#f5f5f5', headerBg: '#e0e0e0', text: '#0080ff', moduleEnabled: '#0080ff', moduleDisabled: '#505050', moduleEnabledBg: '#c8c8c8', moduleDisabledBg: '#b4b4b4', grad1: '#0080ff', grad2: '#50aaff' },
@@ -493,7 +493,7 @@ class WebGUIApp {
             const arrowClass = isExpanded ? 'arrow-icon expanded' : 'arrow-icon';
             
             html += `
-                <div class="module-card ${isEnabled ? 'enabled' : ''}" data-category="${category}" data-name="${module.name.toLowerCase()}">
+                <div class="module-card ${isEnabled ? 'enabled' : ''} ${isExpanded ? 'expanded' : ''}" data-category="${category}" data-name="${module.name.toLowerCase()}">
                     <div class="module-header" onclick="webguiApp.toggleModuleSettings('${module.name.replace(/'/g, "\\'")}')">
                         <div class="module-title-container">
                             <span class="${arrowClass}">▶</span>
@@ -555,13 +555,28 @@ class WebGUIApp {
     }
 
     async toggleModuleSettings(moduleName) {
-        if (this.expandedModules.has(moduleName)) {
+        const isExpanded = this.expandedModules.has(moduleName);
+        const cards = Array.from(document.querySelectorAll('#webgui .module-card'))
+            .filter(card => card.dataset.name === moduleName.toLowerCase());
+        
+        if (isExpanded) {
             this.expandedModules.delete(moduleName);
-        } else {
-            this.expandedModules.add(moduleName);
-            await this.loadModuleSettings(moduleName);
+            cards.forEach(card => {
+                card.classList.remove('expanded');
+                card.querySelector('.settings-container')?.classList.remove('expanded');
+                card.querySelector('.arrow-icon')?.classList.remove('expanded');
+            });
+            return;
         }
-        await this.loadModules();
+
+        this.expandedModules.add(moduleName);
+        for (const card of cards) {
+            card.classList.add('expanded');
+            card.querySelector('.settings-container')?.classList.add('expanded');
+            card.querySelector('.arrow-icon')?.classList.add('expanded');
+        }
+
+        await this.loadModuleSettings(moduleName);
     }
 
     async loadModuleSettings(moduleName) {
