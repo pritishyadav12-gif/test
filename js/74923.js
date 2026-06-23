@@ -210,8 +210,8 @@ class WebGUIApp {
         document.querySelectorAll('#webgui .category-tab').forEach(tab => {
             tab.addEventListener('click', (e) => {
                 document.querySelectorAll('#webgui .category-tab').forEach(t => t.classList.remove('active'));
-                e.target.classList.add('active');
-                this.currentCategory = e.target.dataset.category;
+                e.currentTarget.classList.add('active');
+                this.currentCategory = e.currentTarget.dataset.category;
                 this.filterModules();
             });
         });
@@ -477,45 +477,67 @@ class WebGUIApp {
             return;
         }
         
-        let html = '';
+        const columnCount = 3;
+        const columns = Array.from({ length: columnCount }, () => []);
         
-        modules.forEach(module => {
+        modules.forEach((module, index) => {
             const category = module.category ? module.category.toLowerCase() : 'misc';
             const isEnabled = this.moduleStates[module.name];
             const isExpanded = this.expandedModules.has(module.name);
             const arrowClass = isExpanded ? 'arrow-icon expanded' : 'arrow-icon';
             
-            html += `
+            columns[index % columnCount].push(`
                 <div class="module-card ${isExpanded ? 'expanded' : ''}" data-category="${category}" data-name="${module.name.toLowerCase()}">
                     <div class="module-header" onclick="webguiApp.toggleModuleSettings('${module.name.replace(/'/g, "\\'")}')">
                         <div class="module-title-container">
-                            <span class="${arrowClass}"></span>
+                            <label class="toggle-switch" onclick="event.stopPropagation()">
+                                <input type="checkbox" ${isEnabled ? 'checked' : ''} 
+                                    onchange="webguiApp.toggleModule('${module.name.replace(/'/g, "\\'")}', this.checked)">
+                                <span class="toggle-slider"></span>
+                            </label>
                             <div style="flex: 1;">
                                 <div class="module-title">${module.name}</div>
                                 <div class="module-category">${module.category || 'Misc'}</div>
                             </div>
                         </div>
-                        <label class="toggle-switch" onclick="event.stopPropagation()">
-                            <input type="checkbox" ${isEnabled ? 'checked' : ''} 
-                                onchange="webguiApp.toggleModule('${module.name.replace(/'/g, "\\'")}', this.checked)">
-                            <span class="toggle-slider"></span>
-                        </label>
+                        <span class="${arrowClass}"></span>
                     </div>
                     <div class="module-description">${module.description || 'No description'}</div>
                     <div class="settings-container ${isExpanded ? 'expanded' : ''}" id="settings-${module.name.replace(/\s+/g, '-').replace(/'/g, '')}">
                         ${isExpanded ? '<div class="loading-state">Loading settings...</div>' : ''}
                     </div>
                 </div>
-            `;
+            `);
         });
         
-        container.innerHTML = html;
+        container.innerHTML = columns
+            .map(column => `<div class="module-column">${column.join('')}</div>`)
+            .join('');
         
         this.expandedModules.forEach(moduleName => {
             this.loadModuleSettings(moduleName);
         });
         
+        this.updateCategoryCounts(modules);
         this.filterModules();
+    }
+
+    updateCategoryCounts(modules) {
+        const counts = modules.reduce((acc, module) => {
+            const category = module.category ? module.category.toLowerCase() : 'misc';
+            acc[category] = (acc[category] || 0) + 1;
+            acc.all += 1;
+            return acc;
+        }, { all: 0 });
+
+        document.querySelectorAll('#webgui .category-tab').forEach(tab => {
+            const category = tab.dataset.category || 'all';
+            if (!tab.dataset.label) tab.dataset.label = tab.textContent.trim();
+            tab.innerHTML = `
+                <span class="category-label">${tab.dataset.label}</span>
+                <span class="category-count">${counts[category] || 0}</span>
+            `;
+        });
     }
 
     async toggleModule(moduleName, enabled) {
