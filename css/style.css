@@ -3503,6 +3503,13 @@ body::after {
 }
 
 /* ========== WEBGUI ACCESSIBILITY + REFERENCE-STYLE COLUMN FIX ========== */
+#webgui {
+    width: min(1420px, calc(100vw - 96px));
+    margin-left: auto;
+    margin-right: auto;
+    min-height: auto;
+}
+
 #webgui #main-screen.screen {
     align-items: stretch;
     justify-content: stretch;
@@ -3516,8 +3523,12 @@ body::after {
 }
 
 #webgui .gui-container {
-    height: calc(100vh - 150px);
-    max-height: 820px;
+    height: min(720px, calc(100vh - 190px));
+    min-height: 560px;
+    max-height: 720px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 18px;
 }
 
 #webgui .gui-sidebar {
@@ -3678,9 +3689,14 @@ body::after {
 }
 
 @media (max-width: 760px) {
+    #webgui {
+        width: 100%;
+    }
+
     #webgui .gui-container {
         height: auto;
         max-height: none;
+        min-height: calc(100vh - 150px);
     }
 
     #webgui .modules-container {
