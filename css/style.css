@@ -3501,3 +3501,190 @@ body::after {
         border-radius: 18px;
     }
 }
+
+/* ========== WEBGUI ACCESSIBILITY + REFERENCE-STYLE COLUMN FIX ========== */
+#webgui #main-screen.screen {
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+#webgui .gui-container,
+#webgui .gui-main,
+#webgui .content-area {
+    min-width: 0;
+    min-height: 0;
+}
+
+#webgui .gui-container {
+    height: calc(100vh - 150px);
+    max-height: 820px;
+}
+
+#webgui .gui-sidebar {
+    overflow: hidden;
+}
+
+#webgui .category-tabs {
+    padding: 16px;
+    gap: 8px;
+}
+
+#webgui .category-tab {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+    padding: 10px 14px 10px 44px;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+#webgui .category-tab::before {
+    content: "";
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    transform: translateY(-50%);
+    border-radius: 5px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+#webgui .category-tab::after {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(100deg, rgba(255,255,255,0.12), transparent 42%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+#webgui .category-tab:hover::after,
+#webgui .category-tab.active::after {
+    opacity: 1;
+}
+
+#webgui .category-tab.active::before {
+    background: linear-gradient(135deg, var(--accent-color), var(--secondary-accent));
+    box-shadow: 0 0 18px rgba(54,227,210,0.32);
+}
+
+#webgui .category-label,
+#webgui .category-count {
+    position: relative;
+    z-index: 1;
+}
+
+#webgui .category-count {
+    min-width: 24px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #bffcf5;
+    background: rgba(54, 227, 210, 0.13);
+    border: 1px solid rgba(54, 227, 210, 0.18);
+    font-size: 11px;
+}
+
+#webgui .modules-container {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 14px;
+    height: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 18px;
+    columns: initial;
+    column-gap: normal;
+}
+
+#webgui .module-column {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+}
+
+#webgui .module-card {
+    display: block;
+    width: 100%;
+    margin: 0;
+    break-inside: auto;
+}
+
+#webgui .module-header {
+    align-items: center;
+    gap: 12px;
+}
+
+#webgui .module-title-container {
+    min-width: 0;
+    gap: 12px;
+}
+
+#webgui .module-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#webgui .arrow-icon {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    border-radius: 9px;
+    background: rgba(255,255,255,0.055);
+    border: 1px solid rgba(255,255,255,0.11);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.09), 0 0 16px rgba(54,227,210,0.08);
+}
+
+#webgui .arrow-icon::before {
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 6px;
+    border-left-color: rgba(190, 252, 245, 0.88);
+}
+
+#webgui .arrow-icon.expanded {
+    transform: rotate(90deg);
+    background: linear-gradient(135deg, rgba(54,227,210,0.3), rgba(95,169,255,0.18));
+    border-color: rgba(54,227,210,0.38);
+}
+
+#webgui .module-card.expanded .module-description {
+    margin-bottom: 0;
+}
+
+#webgui .module-card.expanded {
+    outline: 1px solid rgba(54,227,210,0.08);
+}
+
+@media (max-width: 1180px) {
+    #webgui .modules-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        columns: initial;
+    }
+}
+
+@media (max-width: 760px) {
+    #webgui .gui-container {
+        height: auto;
+        max-height: none;
+    }
+
+    #webgui .modules-container {
+        grid-template-columns: 1fr;
+        columns: initial;
+    }
+}
