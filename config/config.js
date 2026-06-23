@@ -9,6 +9,9 @@ const CONFIG = {
     // Your new custom domain
     CUSTOM_DOMAIN: 'https://pikainjection.xyz',
     
+    // Additional domain
+    ADDITIONAL_DOMAIN: 'https://pritishyadav12-gif.github.io/test',
+    
     // List of allowed origins for CORS
     ALLOWED_ORIGINS: [
         'https://ihatediscordq-dotcom.github.io',
@@ -16,6 +19,8 @@ const CONFIG = {
         'https://pikainjection.xyz',
         'http://www.pikainjection.xyz',
         'https://www.pikainjection.xyz',
+        'https://pritishyadav12-gif.github.io',
+        'https://pritishyadav12-gif.github.io/test',
         'http://localhost:3001',
         'http://127.0.0.1:3001'
     ],
