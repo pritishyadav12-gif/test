@@ -3505,14 +3505,29 @@ body::after {
 /* ========== WEBGUI ACCESSIBILITY + REFERENCE-STYLE COLUMN FIX ========== */
 #webgui {
     width: min(1420px, calc(100vw - 96px));
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: calc((100vw - min(1420px, calc(100vw - 96px))) / 2 - ((100vw - 100%) / 2));
+    margin-right: 0;
     min-height: auto;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
+}
+
+#webgui::before,
+#webgui::after {
+    display: none;
 }
 
 #webgui #main-screen.screen {
     align-items: stretch;
     justify-content: stretch;
+}
+
+#webgui #login-screen.screen {
+    justify-content: center;
+    align-items: center;
 }
 
 #webgui .gui-container,
@@ -3529,6 +3544,12 @@ body::after {
     width: 100%;
     margin: 0 auto;
     padding: 18px;
+}
+
+#webgui .login-container {
+    width: min(460px, calc(100vw - 48px));
+    max-width: none;
+    margin: 0 auto;
 }
 
 #webgui .gui-sidebar {
