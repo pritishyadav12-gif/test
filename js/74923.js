@@ -486,10 +486,10 @@ class WebGUIApp {
             const arrowClass = isExpanded ? 'arrow-icon expanded' : 'arrow-icon';
             
             html += `
-                <div class="module-card" data-category="${category}" data-name="${module.name.toLowerCase()}">
+                <div class="module-card ${isExpanded ? 'expanded' : ''}" data-category="${category}" data-name="${module.name.toLowerCase()}">
                     <div class="module-header" onclick="webguiApp.toggleModuleSettings('${module.name.replace(/'/g, "\\'")}')">
                         <div class="module-title-container">
-                            <span class="${arrowClass}">▶</span>
+                            <span class="${arrowClass}"></span>
                             <div style="flex: 1;">
                                 <div class="module-title">${module.name}</div>
                                 <div class="module-category">${module.category || 'Misc'}</div>
